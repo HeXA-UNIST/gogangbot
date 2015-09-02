@@ -19,10 +19,10 @@ const (
 )
 
 const (
-	insertMemoUsage = "!메모 헥사 유니스트 컴퓨터 동아리"
-	viewMemoUsage   = "!메보 헥사"
-	deleteMemoUsage = "!메삭 헥사"
-	clearMemoUsage  = "!메클 헥사"
+	insertMemoUsage = "key value"
+	viewMemoUsage   = "key [, offset]"
+	deleteMemoUsage = "key"
+	clearMemoUsage  = "key"
 )
 
 var (
@@ -71,7 +71,14 @@ func viewMemo(command *bot.Cmd) (msg string, err error) {
 		return "", err
 	}
 
-	rows, err := db.Query("SELECT `value` FROM `memo` WHERE `key`=? LIMIT ?, 10", msgs[0], offset)
+	var n int
+	err = db.QueryRow("SELECT count(*) FROM `memo` WHERE `key`=?", msgs[0]).Scan(&n)
+	if err != nil {
+		return "", err
+	}
+
+	rows, err := db.Query("SELECT `value` FROM `memo` WHERE `key`=? LIMIT ?, 10",
+		msgs[0], offset)
 
 	if err != nil {
 		return "", err
@@ -80,7 +87,7 @@ func viewMemo(command *bot.Cmd) (msg string, err error) {
 
 	var buffer bytes.Buffer
 	buffer.WriteString("```\n")
-	buffer.WriteString(fmt.Sprintf(" %s\n", msgs[0]))
+	buffer.WriteString(fmt.Sprintf(" %s - %d개 찾음\n", msgs[0], n))
 
 	for rows.Next() {
 		var value string
