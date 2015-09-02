@@ -3,6 +3,8 @@ package main
 import (
 	"os"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	_ "github.com/HeXA-UNIST/gogangbot/commands/intro"
 	_ "github.com/HeXA-UNIST/gogangbot/commands/memo"
 	"github.com/fabioxgn/go-bot"
