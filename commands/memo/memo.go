@@ -86,17 +86,15 @@ func viewMemo(command *bot.Cmd) (msg string, err error) {
 	defer rows.Close()
 
 	var buffer bytes.Buffer
-	buffer.WriteString("```\n")
-	buffer.WriteString(fmt.Sprintf(" %s - %d개 찾음\n", msgs[0], n))
+	buffer.WriteString(fmt.Sprintf("> %s - %d개 찾음\n", msgs[0], n))
 
 	for rows.Next() {
 		var value string
 		if err := rows.Scan(&value); err != nil {
 			return "", err
 		}
-		buffer.WriteString(fmt.Sprintf(" * %s\n", value))
+		buffer.WriteString(fmt.Sprintf("> * %s\n", value))
 	}
-	buffer.WriteString("```")
 	return buffer.String(), nil
 }
 
